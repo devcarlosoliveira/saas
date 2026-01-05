@@ -11,8 +11,12 @@ EXPOSE 8080
 ENV ASPNETCORE_HTTP_PORTS=8080
 
 # Cria um usuário não-root para executar a aplicação por segurança.
-RUN adduser --system --group --no-create-home appuser
+# RUN adduser --system --group --no-create-home appuser --debian slim
+# RUN useradd --system --no-create-home appuser USER appuser --alpine
+RUN useradd --system --no-create-home appuser USER appuser
 USER appuser
+
+
 
 # --- Estágio de Build ---
 # Imagem do SDK do .NET. Contém as ferramentas para compilar a aplicação.
