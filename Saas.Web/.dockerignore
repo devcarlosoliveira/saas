@@ -1,0 +1,48 @@
+# Diretórios de compilação e saída
+**/bin
+**/obj
+
+# Arquivos gerados pelo VS e outras IDEs
+**/.classpath
+**/.dockerignore
+**/.project
+**/.settings
+**/.toolstarget
+**/.vs
+**/.vscode
+!**/.vscode/launch.json
+**/.idea
+**/*.csproj.user
+**/*.dbmdl
+**/*.jfm
+**/*.suo
+
+# Arquivos de configuração de ambiente e segredos
+**/.env
+.env.*
+**/secrets.dev.yaml
+
+# Arquivos temporários e de log
+**/*.swp
+**/*.tmp
+**/*.log
+**/*.db
+**/*.sqlite
+**/*.mdf
+**/*.ldf
+
+# Docker e Git
+**/azds.yaml
+**/charts
+**/docker-compose*
+**/Dockerfile*
+.git
+.gitignore
+
+# Dependências de Node.js
+**/node_modules
+**/npm.config
+**/package-lock.json
+
+# Outros
+README.md
