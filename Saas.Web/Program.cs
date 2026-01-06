@@ -1,6 +1,10 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Saas.Web.Data;
+using Saas.Web.Data.Interceptors;
+using Saas.Web.Data.Seed;
+using Saas.Web.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,24 +13,40 @@ var connectionString =
     builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlite(
+        connectionString,
+        sqlite => sqlite.ExecutionStrategy(deps => new SqliteRetryingExecutionStrategy(deps))
+    );
+    options.AddInterceptors(new SqliteOptimizationInterceptor());
+});
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder
-    .Services.AddDefaultIdentity<IdentityUser>(options =>
+    .Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
         options.SignIn.RequireConfirmedAccount = true
     )
+    .AddDefaultUI() // Adiciona as páginas padrão do Identity
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDataProtection().PersistKeysToDbContext<ApplicationDbContext>();
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
+
+    await db.Database.MigrateAsync();
+
+    await IdentitySeeder.SeedAsync(scope.ServiceProvider);
+
+    await db.Database.ExecuteSqlRawAsync("PRAGMA optimize;");
 }
 
 // Configure the HTTP request pipeline.

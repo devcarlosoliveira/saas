@@ -12,24 +12,28 @@
 
   <ItemGroup>
     <PackageReference
+      Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore"
+      Version="10.0.1"
+    />
+    <PackageReference
       Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"
-      Version="10.0.0-preview.7.25380.108"
+      Version="10.0.1"
     />
     <PackageReference
       Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"
-      Version="10.0.0-preview.7.25380.108"
+      Version="10.0.1"
     />
-    <PackageReference
-      Include="Microsoft.AspNetCore.Identity.UI"
-      Version="10.0.0-preview.7.25380.108"
-    />
-    <PackageReference
-      Include="Microsoft.EntityFrameworkCore.Sqlite"
-      Version="10.0.0-preview.7.25380.108"
-    />
-    <PackageReference
-      Include="Microsoft.EntityFrameworkCore.Tools"
-      Version="10.0.0-preview.7.25380.108"
-    />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.1" />
+    <PackageReference Include="Ulid" Version="1.4.1" />
   </ItemGroup>
 </Project>
