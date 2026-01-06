@@ -7,7 +7,7 @@ WORKDIR /app
 EXPOSE 8080
 
 # Configura a porta interna do ASP.NET Core
-ENV ASPNETCORE_HTTP_PORTS=
+ENV ASPNETCORE_HTTP_PORTS=8080
 
 # Cria a pasta de dados ANTES de trocar de usuário 
 RUN mkdir -p /app/Data \ 
