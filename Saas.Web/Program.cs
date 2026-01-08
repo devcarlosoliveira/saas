@@ -19,7 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         connectionString,
         sqlite => sqlite.ExecutionStrategy(deps => new SqliteRetryingExecutionStrategy(deps))
     );
-    options.AddInterceptors(new SqliteOptimizationInterceptor());
+    options.AddInterceptors(new SqliteOptimizationInterceptor(), new AuditInterceptor());
 });
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
