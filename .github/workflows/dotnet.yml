@@ -44,7 +44,13 @@ jobs:
       - name: Deploy na VPS via SSH
         run: |
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
-            docker pull ${{ secrets.REGISTRY_URL }}/saas-web:latest &&
             cd /opt/saas &&
+
+            # Exporta secrets para o ambiente do docker compose
+            export OPENAI_API_KEY='${{ secrets.OPENAI_API_KEY }}' &&
+            export OPENAI_MODEL='${{ secrets.OPENAI_MODEL }}' &&
+            export ASPNETCORE_ENVIRONMENT='Production' &&
+
+            docker pull ${{ secrets.REGISTRY_URL }}/saas-web:latest &&
             docker compose up -d
           "
