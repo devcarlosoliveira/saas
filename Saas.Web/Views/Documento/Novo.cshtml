@@ -1,0 +1,161 @@
+@model List<Saas.Web.Models.Tag>
+@{
+    ViewData["Title"] = "Novo Documento";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">✍️ Criar Novo Documento</h1>
+    
+    <div class="row">
+        <!-- Formulário Principal -->
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <form asp-action="Novo" method="post">
+                        @Html.AntiForgeryToken()
+                        
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label">Título (opcional)</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="titulo" 
+                                   name="titulo" 
+                                   placeholder="Ex: Artigo sobre História do Brasil"
+                                   maxlength="200">
+                            <div class="form-text">Um título para identificar seu documento</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="textoOriginal" class="form-label">
+                                Texto <span class="text-danger">*</span>
+                            </label>
+                            <textarea class="form-control" 
+                                      id="textoOriginal" 
+                                      name="textoOriginal" 
+                                      rows="12" 
+                                      required
+                                      placeholder="Cole ou digite seu texto aqui. A IA irá analisar e identificar padrões como listas, tabelas, citações, infográficos, etc."></textarea>
+                            <div class="form-text">
+                                <span id="charCount">0</span> caracteres (mínimo 50)
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <strong>ℹ️ Como funciona:</strong>
+                            <ol class="mb-0 mt-2">
+                                <li>Envie seu texto</li>
+                                <li>Nossa IA identificará padrões e formatos no conteúdo</li>
+                                <li>Você poderá selecionar ou modificar os formatos identificados</li>
+                                <li>Receberá o texto reescrito no formato escolhido</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary btn-lg" id="btnSubmit">
+                                Processar com IA 🚀
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar - Tipos de Formatos -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">🏷️ Formatos Disponíveis</h5>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted mb-3">Marque os formatos que você gostaria que a IA identificasse:</p>
+                    <!-- 
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnSelectAll">
+                            ✓ Marcar Todos
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnDeselectAll">
+                            ✗ Desmarcar Todos
+                        </button>
+                    </div>
+                    -->
+                    
+                    <div style="max-height: 500px; overflow-y: auto;">
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var tag in Model)
+                            {
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input tag-checkbox" 
+                                           type="checkbox" 
+                                           name="tagsPreferidas" 
+                                           value="@tag.Id" 
+                                           id="tag_@tag.Id"
+                                           checked>
+                                    <label class="form-check-label" for="tag_@tag.Id">
+                                        <strong>@tag.Nome</strong>
+                                        @if (!string.IsNullOrEmpty(tag.Descricao))
+                                        {
+                                            <br>
+                                            <small class="text-muted">@tag.Descricao</small>
+                                        }
+                                    </label>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted">Nenhum formato disponível.</p>
+                        }
+                    </div>
+                    
+                    <div class="mt-3 pt-3 border-top">
+                        <small class="text-muted">
+                            <strong>Dica:</strong> Todas estão marcadas por padrão. 
+                            Desmarque aquelas que você NÃO quer que sejam identificadas.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Contador de caracteres
+        const textarea = document.getElementById('textoOriginal');
+        const charCount = document.getElementById('charCount');
+        const btnSubmit = document.getElementById('btnSubmit');
+        
+        textarea.addEventListener('input', function() {
+            const count = this.value.length;
+            charCount.textContent = count;
+            
+            if (count < 50) {
+                charCount.classList.add('text-danger');
+                charCount.classList.remove('text-success');
+                btnSubmit.disabled = true;
+            } else {
+                charCount.classList.add('text-success');
+                charCount.classList.remove('text-danger');
+                btnSubmit.disabled = false;
+            }
+        });
+        
+        // Prevenir múltiplos submits
+        document.querySelector('form').addEventListener('submit', function() {
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processando...';
+        });
+        
+        // Marcar/Desmarcar todos os checkboxes
+        document.getElementById('btnSelectAll')?.addEventListener('click', function() {
+            document.querySelectorAll('.tag-checkbox').forEach(cb => cb.checked = true);
+        });
+        
+        document.getElementById('btnDeselectAll')?.addEventListener('click', function() {
+            document.querySelectorAll('.tag-checkbox').forEach(cb => cb.checked = false);
+        });
+    </script>
+}

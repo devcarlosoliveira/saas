@@ -4,7 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Saas.Web.Data;
 using Saas.Web.Data.Interceptors;
 using Saas.Web.Data.Seed;
+using Saas.Web.Data.Seeds;
 using Saas.Web.Models;
+using Saas.Web.Services.Document;
+using Saas.Web.Services.IA;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +39,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDataProtection().PersistKeysToDbContext<ApplicationDbContext>();
 
+// Registrar serviços de IA e processamento
+builder.Services.AddScoped<ISemanticKernelService, SemanticKernelService>();
+builder.Services.AddScoped<IContentProcessingService, ContentProcessingService>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -45,6 +52,9 @@ using (var scope = app.Services.CreateScope())
     await db.Database.MigrateAsync();
 
     await IdentitySeeder.SeedAsync(scope.ServiceProvider);
+
+    // Seed de Tags
+    await TagSeeder.SeedTagsAsync(db);
 
     await db.Database.ExecuteSqlRawAsync("PRAGMA optimize;");
 }
@@ -62,11 +72,19 @@ else
 }
 
 app.UseHttpsRedirection();
+
 app.UseRouting();
 
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+// Rota para áreas (necessário para /app funcionar)
+app.MapControllerRoute(
+        name: "areas",
+        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+    )
+    .WithStaticAssets();
 
 app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();

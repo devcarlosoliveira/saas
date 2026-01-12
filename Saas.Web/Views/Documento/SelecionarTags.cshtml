@@ -1,0 +1,183 @@
+@model Saas.Web.Models.Processamento
+@{
+    ViewData["Title"] = "Selecionar Formatos";
+    var tagsIdentificadas = ViewBag.TagsIdentificadas as List<Saas.Web.Models.ProcessamentoTagIdentificada>;
+    var todasTags = ViewBag.TodasTags as List<Saas.Web.Models.Tag>;
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h1 class="mb-4">🏷️ Formatos Identificados</h1>
+            
+            @if (TempData["Sucesso"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show">
+                    @TempData["Sucesso"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            
+            <!-- Texto Original -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">📄 Texto Original</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-muted" style="max-height: 200px; overflow-y: auto;">
+                        @Model.Documento!.TextoOriginal
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Análise da IA -->
+            @if (!string.IsNullOrEmpty(Model.TextoResultante))
+            {
+                <div class="alert alert-info">
+                    <strong>🤖 Análise da IA:</strong>
+                    <p class="mb-0 mt-2">@Model.TextoResultante</p>
+                </div>
+            }
+            
+            <form asp-action="SelecionarTags" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">✨ Tags Identificadas pela IA</h5>
+                        <small>Marcadas automaticamente baseado no conteúdo</small>
+                    </div>
+                    <div class="card-body">
+                        @if (tagsIdentificadas != null && tagsIdentificadas.Any())
+                        {
+                            <div class="row">
+                                @foreach (var tagIdentificada in tagsIdentificadas)
+                                {
+                                    var confiancaPercentual = (tagIdentificada.Confianca ?? 0) * 100;
+                                    var corBadge = confiancaPercentual >= 80 ? "success" : 
+                                                   confiancaPercentual >= 60 ? "warning" : "secondary";
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check border rounded p-3 h-100 bg-light">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   name="tagsSelecionadas" 
+                                                   value="@tagIdentificada.TagId" 
+                                                   id="tag_@tagIdentificada.TagId"
+                                                   checked>
+                                            <label class="form-check-label w-100" for="tag_@tagIdentificada.TagId">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <strong>@tagIdentificada.Tag!.Nome</strong>
+                                                        @if (!string.IsNullOrEmpty(tagIdentificada.Tag.Descricao))
+                                                        {
+                                                            <small class="d-block text-muted">
+                                                                @tagIdentificada.Tag.Descricao
+                                                            </small>
+                                                        }
+                                                    </div>
+                                                    <span class="badge bg-@corBadge">
+                                                        @confiancaPercentual.ToString("0")%
+                                                    </span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted">Nenhuma tag foi identificada automaticamente.</p>
+                        }
+                    </div>
+                </div>
+                
+                <!-- Outras Tags Disponíveis -->
+                <div class="card shadow mt-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">📋 Outros Formatos Disponíveis</h5>
+                        <small>Adicione manualmente se desejar</small>
+                    </div>
+                    <div class="card-body">
+                        @if (todasTags != null)
+                        {
+                            var tagsIdentificadasIds = tagsIdentificadas?.Select(t => t.TagId).ToList() ?? new List<int>();
+                            var outrasTagsDisponiveis = todasTags.Where(t => !tagsIdentificadasIds.Contains(t.Id)).ToList();
+                            
+                            @if (outrasTagsDisponiveis.Any())
+                            {
+                                <div class="row">
+                                    @foreach (var tag in outrasTagsDisponiveis)
+                                    {
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="form-check border rounded p-2">
+                                                <input class="form-check-input" 
+                                                       type="checkbox" 
+                                                       name="tagsSelecionadas" 
+                                                       value="@tag.Id" 
+                                                       id="tag_@tag.Id">
+                                                <label class="form-check-label" for="tag_@tag.Id">
+                                                    <strong>@tag.Nome</strong>
+                                                    @if (!string.IsNullOrEmpty(tag.Descricao))
+                                                    {
+                                                        <small class="d-block text-muted">@tag.Descricao</small>
+                                                    }
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted">Todas as tags disponíveis já foram identificadas.</p>
+                            }
+                        }
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning mt-4">
+                    <strong>⚠️ Atenção:</strong> Selecione pelo menos uma tag para continuar. 
+                    As tags selecionadas serão usadas para reescrever seu texto no formato adequado.
+                </div>
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-success btn-lg" id="btnReescrever">
+                        Reescrever Texto com Tags Selecionadas 🚀
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Validação de pelo menos uma tag selecionada
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const checkboxes = document.querySelectorAll('input[name="tagsSelecionadas"]:checked');
+            
+            if (checkboxes.length === 0) {
+                e.preventDefault();
+                alert('Por favor, selecione pelo menos uma tag.');
+                return false;
+            }
+            
+            const btn = document.getElementById('btnReescrever');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Reescrevendo...';
+        });
+        
+        // Contador de tags selecionadas
+        const checkboxes = document.querySelectorAll('input[name="tagsSelecionadas"]');
+        const updateCounter = () => {
+            const selected = document.querySelectorAll('input[name="tagsSelecionadas"]:checked').length;
+            console.log(`${selected} tag(s) selecionada(s)`);
+        };
+        
+        checkboxes.forEach(cb => cb.addEventListener('change', updateCounter));
+        updateCounter();
+    </script>
+}

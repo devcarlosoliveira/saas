@@ -1,0 +1,194 @@
+@model Saas.Web.Models.Processamento
+@{
+    ViewData["Title"] = "Resultado";
+    var tagsAplicadas = Model.ProcessamentoAnterior?.TagsSelecionadas
+        .Where(ts => ts.AcaoUsuario != Saas.Web.Models.Enums.AcaoUsuario.Removida)
+        .Select(ts => ts.Tag)
+        .ToList();
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h1 class="mb-4">✨ Texto Reescrito</h1>
+            
+            @if (TempData["Sucesso"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show">
+                    @TempData["Sucesso"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            
+            @if (Model.Status == Saas.Web.Models.Enums.ProcessamentoStatus.Erro)
+            {
+                <div class="alert alert-danger">
+                    <strong>❌ Erro no processamento:</strong>
+                    <p class="mb-0 mt-2">@Model.TextoResultante</p>
+                </div>
+            }
+            else if (Model.Status == Saas.Web.Models.Enums.ProcessamentoStatus.Concluido)
+            {
+                <!-- Tags Aplicadas -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">🏷️ Formatos Aplicados</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (tagsAplicadas != null && tagsAplicadas.Any())
+                        {
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var tag in tagsAplicadas)
+                                {
+                                    <span class="badge bg-primary fs-6">@tag!.Nome</span>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">Nenhuma tag aplicada</p>
+                        }
+                    </div>
+                </div>
+                
+                <!-- Comparação: Antes e Depois -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">📄 Texto Original</h5>
+                            </div>
+                            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit;">@Model.Documento!.TextoOriginal</pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card h-100 border-success">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">✨ Texto Reescrito</h5>
+                            </div>
+                            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                <div id="textoReescrito">
+                                    @Html.Raw(System.Net.WebUtility.HtmlEncode(Model.TextoResultante).Replace("\n", "<br>"))
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Texto Reescrito em Destaque -->
+                <div class="card shadow-lg mb-4">
+                    <div class="card-header bg-success text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">📝 Resultado Final</h5>
+                            <button class="btn btn-light btn-sm" onclick="copiarTexto()">
+                                <i class="bi bi-clipboard"></i> Copiar Texto
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-4 bg-light" style="font-size: 1.1rem;">
+                        <div id="textoFinal">
+                            @Html.Raw(System.Net.WebUtility.HtmlEncode(Model.TextoResultante).Replace("\n", "<br>"))
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ações -->
+                <div class="d-flex justify-content-between flex-wrap gap-2">
+                    <div>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Voltar aos Documentos
+                        </a>
+                        <a asp-action="Detalhes" asp-route-id="@Model.DocumentoId" class="btn btn-outline-primary">
+                            Ver Histórico Completo
+                        </a>
+                    </div>
+                    
+                    <div>
+                        <button class="btn btn-success" onclick="baixarTexto()">
+                            <i class="bi bi-download"></i> Baixar como TXT
+                        </button>
+                        <a asp-action="ReprocessarTags" asp-route-id="@Model.DocumentoId" 
+                           class="btn btn-warning"
+                           onclick="return confirm('Deseja reprocessar este documento? Isso criará uma nova análise.')">
+                            <i class="bi bi-arrow-repeat"></i> Reprocessar
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Informações do Processamento -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">ℹ️ Informações do Processamento</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>Data:</strong> 
+                                @Model.DataProcessamento.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Tipo:</strong> 
+                                @Model.Tipo.ToString()
+                            </div>
+                            <div class="col-md-4">
+                                <strong>Status:</strong> 
+                                <span class="badge bg-success">@Model.Status.ToString()</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                        <span class="visually-hidden">Processando...</span>
+                    </div>
+                    <p class="mt-3">Processamento em andamento...</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function copiarTexto() {
+            const texto = '@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TextoResultante))';
+            const textoLimpo = JSON.parse(texto);
+            
+            navigator.clipboard.writeText(textoLimpo).then(() => {
+                alert('✓ Texto copiado para a área de transferência!');
+            }).catch(err => {
+                console.error('Erro ao copiar:', err);
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = textoLimpo;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('✓ Texto copiado!');
+            });
+        }
+        
+        function baixarTexto() {
+            const texto = '@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TextoResultante))';
+            const textoLimpo = JSON.parse(texto);
+            const titulo = '@(Model.Documento?.Titulo ?? "documento")';
+            
+            const blob = new Blob([textoLimpo], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${titulo}_reescrito_${new Date().getTime()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+}

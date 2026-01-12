@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"] = "Área do App";
+}
+
+<div class="container mt-5">
+    <div class="text-center">
+        <h1 class="display-4">🎯 Área do Aplicativo</h1>
+        <p class="lead">Bem-vindo à área de aplicação!</p>
+        
+        <div class="mt-5">
+            <a asp-area="" asp-controller="Documento" asp-action="Index" class="btn btn-primary btn-lg">
+                📄 Ir para Meus Documentos
+            </a>
+            
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-lg ms-2">
+                🏠 Voltar ao Início
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,205 @@
+@model Saas.Web.Models.Documento
+@{
+    ViewData["Title"] = "Detalhes do Documento";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>📄 Detalhes do Documento</h1>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Voltar
+                </a>
+            </div>
+            
+            <!-- Informações do Documento -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        @if (!string.IsNullOrEmpty(Model.Titulo))
+                        {
+                            @Model.Titulo
+                        }
+                        else
+                        {
+                            <span>Documento #@Model.Id</span>
+                        }
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <strong>Status:</strong>
+                            @switch (Model.Status)
+                            {
+                                case Saas.Web.Models.Enums.DocumentoStatus.Processando:
+                                    <span class="badge bg-warning">Processando</span>
+                                    break;
+                                case Saas.Web.Models.Enums.DocumentoStatus.Concluido:
+                                    <span class="badge bg-success">Concluído</span>
+                                    break;
+                                case Saas.Web.Models.Enums.DocumentoStatus.Erro:
+                                    <span class="badge bg-danger">Erro</span>
+                                    break;
+                            }
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Criado em:</strong> 
+                            @Model.DataCriacao.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Processamentos:</strong> 
+                            @Model.Processamentos.Count
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6><strong>Texto Original:</strong></h6>
+                    <div class="p-3 bg-light rounded" style="max-height: 300px; overflow-y: auto;">
+                        <pre class="mb-0" style="white-space: pre-wrap; font-family: inherit;">@Model.TextoOriginal</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Histórico de Processamentos -->
+            <div class="card shadow">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">📊 Histórico de Processamentos</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Processamentos.Any())
+                    {
+                        <div class="timeline">
+                            @foreach (var proc in Model.Processamentos.OrderBy(p => p.DataProcessamento))
+                            {
+                                <div class="card mb-3 @(proc.Status == Saas.Web.Models.Enums.ProcessamentoStatus.Concluido ? "border-success" : "")">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="card-title">
+                                                    @switch (proc.Tipo)
+                                                    {
+                                                        case Saas.Web.Models.Enums.ProcessamentoTipo.IdentificacaoTags:
+                                                            <span>🏷️ Identificação de Tags</span>
+                                                            break;
+                                                        case Saas.Web.Models.Enums.ProcessamentoTipo.GeracaoConteudo:
+                                                            <span>✨ Geração de Conteúdo</span>
+                                                            break;
+                                                        default:
+                                                            <span>@proc.Tipo.ToString()</span>
+                                                            break;
+                                                    }
+                                                </h6>
+                                                <small class="text-muted">
+                                                    @proc.DataProcessamento.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")
+                                                </small>
+                                            </div>
+                                            <div>
+                                                @switch (proc.Status)
+                                                {
+                                                    case Saas.Web.Models.Enums.ProcessamentoStatus.Pendente:
+                                                        <span class="badge bg-secondary">Pendente</span>
+                                                        break;
+                                                    case Saas.Web.Models.Enums.ProcessamentoStatus.Processando:
+                                                        <span class="badge bg-warning">Processando</span>
+                                                        break;
+                                                    case Saas.Web.Models.Enums.ProcessamentoStatus.Concluido:
+                                                        <span class="badge bg-success">Concluído</span>
+                                                        break;
+                                                    case Saas.Web.Models.Enums.ProcessamentoStatus.Erro:
+                                                        <span class="badge bg-danger">Erro</span>
+                                                        break;
+                                                }
+                                            </div>
+                                        </div>
+                                        
+                                        @if (proc.Tipo == Saas.Web.Models.Enums.ProcessamentoTipo.IdentificacaoTags && proc.TagsIdentificadas.Any())
+                                        {
+                                            <div class="mt-3">
+                                                <strong>Tags Identificadas:</strong>
+                                                <div class="d-flex flex-wrap gap-2 mt-2">
+                                                    @foreach (var tag in proc.TagsIdentificadas.OrderByDescending(t => t.Confianca))
+                                                    {
+                                                        var confianca = (tag.Confianca ?? 0) * 100;
+                                                        <span class="badge bg-info">
+                                                            @tag.Tag!.Nome (@confianca.ToString("0")%)
+                                                        </span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                        
+                                        @if (proc.Tipo == Saas.Web.Models.Enums.ProcessamentoTipo.IdentificacaoTags && proc.TagsSelecionadas.Any())
+                                        {
+                                            <div class="mt-3">
+                                                <strong>Tags Selecionadas pelo Usuário:</strong>
+                                                <div class="d-flex flex-wrap gap-2 mt-2">
+                                                    @foreach (var tag in proc.TagsSelecionadas.Where(ts => ts.AcaoUsuario != Saas.Web.Models.Enums.AcaoUsuario.Removida))
+                                                    {
+                                                        var corBadge = tag.AcaoUsuario == Saas.Web.Models.Enums.AcaoUsuario.Adicionada ? "warning" : "primary";
+                                                        <span class="badge bg-@corBadge">
+                                                            @tag.Tag!.Nome
+                                                            @if (tag.AcaoUsuario == Saas.Web.Models.Enums.AcaoUsuario.Adicionada)
+                                                            {
+                                                                <span>(Adicionada)</span>
+                                                            }
+                                                        </span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                        
+                                        @if (proc.Tipo == Saas.Web.Models.Enums.ProcessamentoTipo.GeracaoConteudo)
+                                        {
+                                            <div class="mt-3">
+                                                <a asp-action="Resultado" asp-route-id="@proc.Id" class="btn btn-sm btn-success">
+                                                    Ver Resultado
+                                                </a>
+                                            </div>
+                                        }
+                                        else if (proc.Tipo == Saas.Web.Models.Enums.ProcessamentoTipo.IdentificacaoTags && 
+                                                 proc.Status == Saas.Web.Models.Enums.ProcessamentoStatus.Concluido)
+                                        {
+                                            <div class="mt-3">
+                                                <a asp-action="SelecionarTags" asp-route-id="@proc.Id" class="btn btn-sm btn-primary">
+                                                    Ver Seleção de Tags
+                                                </a>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Nenhum processamento ainda.</p>
+                    }
+                </div>
+            </div>
+            
+            <!-- Ações -->
+            <div class="mt-4 d-flex justify-content-between">
+                <div>
+                    <a asp-action="ReprocessarTags" asp-route-id="@Model.Id" 
+                       class="btn btn-warning"
+                       onclick="return confirm('Deseja criar um novo processamento para este documento?')">
+                        <i class="bi bi-arrow-repeat"></i> Novo Processamento
+                    </a>
+                </div>
+                <div>
+                    <form asp-action="Excluir" asp-route-id="@Model.Id" method="post" 
+                          class="d-inline" 
+                          onsubmit="return confirm('Tem certeza que deseja excluir este documento e todo seu histórico?')">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Excluir Documento
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
