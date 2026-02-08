@@ -38,6 +38,17 @@ Para cada finding incluir:
 - Estimativa de esforço
 - Proprietário sugerido
 
+### F001 — dependencies / critical
+- Categoria: dependencies
+- Severidade: Critical
+- Descrição curta: Microsoft.SemanticKernel.Core 1.68.0 tem vulnerabilidade crítica (GHSA-2ww3-72rp-wpp4).
+- Passos / evidências: reportado pelo comando `dotnet list package --vulnerable`; referência em `Saas.Web/Saas.Web.csproj`.
+- Impacto: potencial execução remota de código ou outros efeitos críticos dependendo do advisory.
+- Recomendação — mitigação rápida: remover ou limitar uso da funcionalidade afetada, bloquear a versão vulnerável em dependabot/severidade e aplicar monitoramento; substituir por versão segura se disponível.
+- Recomendação — solução completa: atualizar a dependência para versão corrigida e rodar testes de regressão; se atualização não disponível, aplicar mitigação de isolamento e plano de compensação.
+- Estimativa de esforço: 1 dia
+- Proprietário sugerido: Backend owner / maintainer
+
 ## Top-5 Improvement Tasks
 
 Resumo das cinco tarefas de maior impacto. Detalhes e critérios estão em `top-5-tasks.md`.

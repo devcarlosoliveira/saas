@@ -1,1 +1,3 @@
 id,category,severity,short_description,steps_to_reproduce,impact,recommendation,effort_estimate,owner_suggestion
+
+F001,dependencies,critical,"Microsoft.SemanticKernel.Core 1.68.0 has known critical vulnerability","See dotnet list package output; package Microsoft.SemanticKernel.Core 1.68.0 referenced in Saas.Web/Saas.Web.csproj","Potential remote code execution or other critical impact depending on advisory","Upgrade or patch Microsoft.SemanticKernel.Core to a non-vulnerable version; if no fix available, isolate usage and apply compensating controls","1d","Backend owner / maintainer"
