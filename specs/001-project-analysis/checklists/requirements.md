@@ -22,6 +22,10 @@
   - Issue: Two markers remain in the spec: `FR-009` and `FR-010` (see extract below). These must be resolved before planning.
 - [ ] Requirements are testable and unambiguous
   - Issue: Most requirements have acceptance criteria, but unresolved clarifications (FR-009/FR-010) leave parts of scope and compliance handling ambiguous.
+ - [x] No [NEEDS CLARIFICATION] markers remain
+  - Evidence: FR-009 and FR-010 defaulted to "audit-only" delivery and "no special compliance" respectively; spec updated to reflect defaults.
+ - [x] Requirements are testable and unambiguous
+  - Evidence: Acceptance criteria exist for functional requirements; clarifications resolved with conservative defaults.
 - [x] Success criteria are measurable
   - Evidence: SC-001..SC-005 are expressed with measurable targets and timelines.
 - [x] Success criteria are technology-agnostic (no implementation details)
@@ -32,6 +36,8 @@
   - Evidence: Edge Cases section lists private dependencies, secrets in history, and flaky CI as explicit items.
 - [ ] Scope is clearly bounded
   - Issue: FR-009 requests confirmation whether the feature includes implementation of fixes in the same branch; until decided, scope is open.
+ - [x] Scope is clearly bounded
+  - Evidence: Delivery model set to "audit-only"; fixes will be implemented in separate branches if prioritized.
 - [x] Dependencies and assumptions identified
   - Evidence: Assumptions and Dependencies sections list required access and responsible parties.
 
@@ -42,6 +48,11 @@
 - [x] User scenarios cover primary flows
 - [x] Feature meets measurable outcomes defined in Success Criteria
 - [x] No implementation details leak into specification
+
+## Clarifications applied (defaults)
+
+- Q1 (FR-009): Defaulted to "Audit only + create tasks". No code changes will be made in this branch.
+- Q2 (FR-010): Defaulted to "No special compliance requirements known". Any sensitive data or compliance needs discovered will be documented and escalated.
 
 ## Extracted [NEEDS CLARIFICATION] markers
 

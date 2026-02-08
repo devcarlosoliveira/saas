@@ -92,8 +92,8 @@ Como novo membro da equipe, eu preciso de documentação de onboarding e instru�
 - **FR-006**: Medir e registrar métricas básicas de linha de base: cobertura de testes por módulo, taxa de sucesso do CI (últimas 30 execuções), e contagem de findings por severidade.
 - **FR-007**: Sempre que possível, sugerir uma verificação automatizada (ex.: teste ou check de CI) que previna regressão para cada remediação proposta.
 - **FR-008**: Documentar dependências e quaisquer obstáculos para reproduzir a build ou testes (acessos, variáveis de ambiente, serviços externos).
-- **FR-009**: Modelo de entrega: [NEEDS CLARIFICATION: confirmar escopo — somente auditoria e criação de tarefas (recomendado), ou auditoria + implementação de correções nesta mesma branch?]
-- **FR-010**: Restrições legais e de privacidade: [NEEDS CLARIFICATION: existem requisitos de conformidade ou tratamento de dados sensíveis que alterem priorização ou abordagem?]
+ - **FR-009**: Modelo de entrega: Somente auditoria e criação de tarefas (padrão). Implementação de correções NÃO será feita nesta mesma branch; correções serão executadas em branches separadas quando priorizadas.
+ - **FR-010**: Restrições legais e de privacidade: Sem requisitos de conformidade especiais conhecidos no escopo atual (padrão). A auditoria identificará qualquer dado sensível ou necessidade de conformidade e os marcará para tratamento/escalonamento, caso sejam encontrados.
 
 ### Acceptance Criteria for Requirements
 
@@ -105,6 +105,10 @@ Como novo membro da equipe, eu preciso de documentação de onboarding e instru�
 - **AC-FR-006**: Métricas de baseline documentadas em formato tabular com fonte e data (e.g., cobertura por módulo com data, taxa de sucesso do CI nas últimas 30 execuções, contagem de findings por severidade).
 - **AC-FR-007**: Para pelo menos 50% das remediações propostas, existe uma recomendação de verificação automatizada (descrita a nível de teste/check) que pode ser adicionada ao CI.
 - **AC-FR-008**: Dependências e obstáculos documentados com instruções claras sobre como obter acesso ou reproduzir ambientes; itens bloqueadores são marcados separadamente.
+ - **AC-FR-007**: Para pelo menos 50% das remediações propostas, existe uma recomendação de verificação automatizada (descrita a nível de teste/check) que pode ser adicionada ao CI.
+ - **AC-FR-008**: Dependências e obstáculos documentados com instruções claras sobre como obter acesso ou reproduzir ambientes; itens bloqueadores são marcados separadamente.
+ - **AC-FR-009**: O AuditReport inclui uma seção "Delivery Model" que afirma explicitamente "audit-only" e confirma que não haverá alterações no código nesta branch; todas as remediações são criadas como tarefas separadas.
+ - **AC-FR-010**: O AuditReport inclui uma seção "Compliance" que lista requisitos legais identificados ou declara explicitamente "Nenhum requisito de conformidade especial identificado" quando aplicável. Qualquer dado sensível identificado é documentado e recomendado para tratamento conforme políticas internas.
 
 
 ### Key Entities *(include if feature involves data)*
