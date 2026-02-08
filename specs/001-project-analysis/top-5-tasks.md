@@ -9,6 +9,12 @@ Para cada tarefa incluída aqui, preencher:
 
 1) [Task 1 title]
 
+   - Title: Remediar vulnerabilidade em Microsoft.SemanticKernel.Core (F001)
+   - Description: Atualizar ou mitigar dependência Microsoft.SemanticKernel.Core 1.68.0 encontrada em `Saas.Web/Saas.Web.csproj`
+   - Acceptance Criteria: ver `specs/001-project-analysis/tasks/task-001.md`
+   - Estimate: 1d
+   - Owner: Backend owner / maintainer
+
 2) [Task 2 title]
 
 3) [Task 3 title]
