@@ -1,21 +1,74 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
 {
-	"name": "C# (.NET)",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/dotnet:1-10.0-preview",
-	"features": {
-		"ghcr.io/devcontainers/features/dotnet:2": {
-			"version": "9.0"
-		}
-	},
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"ms-dotnettools.csdevkit"
-			]
-		}
-	}
+  "name": "C# (.NET 10)",
+   "image": "mcr.microsoft.com/devcontainers/dotnet:10.0",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+			"installZsh": true,
+			"installOhMyZsh": true,
+			"installOhMyZshConfig": true,
+			"upgradePackages": true,
+			"username": "devcontainer",
+			"userUid": "automatic",
+			"userGid": "automatic"
+		},
+    "ghcr.io/devcontainers-extra/features/uv:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+			"ppa": true,
+			"version": "latest"
+		},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  },
+  "customizations": {
+    "vscode": {
+        "extensions": [
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.csharp",
+        "ms-vscode.vscode-dotnet-runtime",
+        "mhutchie.git-graph",
+        "eamodio.gitlens",
+        "anweber.reveal-button",
+        "chrisdias.promptboost",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "csharpier.csharpier-vscode",
+        "sst-dev.opencode",
+        "Google.geminicodeassist",
+        "streetsidesoftware.code-spell-checker",
+        "streetsidesoftware.code-spell-checker-portuguese-brazilian"
+      ],
+      "settings": {
+        "debug.javascript.autoAttachFilter": "disabled", // fix running commands in integrated terminal
+
+        // Specify settings for Github Copilot
+        "git.autofetch": true,
+        "chat.promptFilesRecommendations": {
+          "speckit.constitution": true,
+          "speckit.specify": true,
+          "speckit.plan": true,
+          "speckit.tasks": true,
+          "speckit.implement": true
+        },
+        "chat.tools.terminal.autoApprove": {
+          ".specify/scripts/bash/": true,
+          ".specify/scripts/powershell/": true
+        }
+      }
+    }
+  },
+  "forwardPorts": [
+	8080 // for Spec-Kit documentation site
+  ],
+  "containerUser": "devcontainer",
+  "updateRemoteUserUID": true,
+  // "postCreateCommand": "bash ./.devcontainer/setup.sh"
+  "postCreateCommand": "chmod +x ./.devcontainer/setup.sh && ./.devcontainer/setup.sh"
+
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},

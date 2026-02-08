@@ -4,7 +4,7 @@ This is a foundational ASP.NET Core web application, intended to be the starting
 
 ## Core Technologies
 
-*   **.NET 10 (Preview)**: The underlying framework for the application.
+*   **.NET 10**: The underlying framework for the application.
 *   **ASP.NET Core**: Used for building the web application, following the MVC (Model-View-Controller) pattern.
 *   **Entity Framework Core**: Used as the Object-Relational Mapper (ORM) to interact with the database.
 *   **ASP.NET Core Identity**: Provides a complete user authentication and management system, including registration, login, and user roles.
