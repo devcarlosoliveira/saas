@@ -5,6 +5,11 @@
 **Status**: Draft  
 **Input**: User description: "faça uma análise do projeto, critique e faça melhorias. use o context7"
 
+## Executive Summary (non-technical)
+
+Este trabalho entrega uma auditoria prática do projeto que identifica problemas de maior impacto (arquitetura, qualidade de código, testes, integração contínua, documentação e segurança) e converte essas descobertas em um plano de ação priorizado. O objetivo é reduzir riscos, diminuir custo de manutenção e acelerar a entrega de valor. O relatório final incluirá um sumário executivo, descobertas com severidade, recomendações, estimativas de esforço e um conjunto inicial de tarefas (quick wins) prontas para execução.
+
+
 ## User Scenarios & Testing *(mandatory)*
 
 <!--
@@ -90,25 +95,17 @@ Como novo membro da equipe, eu preciso de documentação de onboarding e instru�
 - **FR-009**: Modelo de entrega: [NEEDS CLARIFICATION: confirmar escopo — somente auditoria e criação de tarefas (recomendado), ou auditoria + implementação de correções nesta mesma branch?]
 - **FR-010**: Restrições legais e de privacidade: [NEEDS CLARIFICATION: existem requisitos de conformidade ou tratamento de dados sensíveis que alterem priorização ou abordagem?]
 
-## Requirements *(mandatory)*
+### Acceptance Criteria for Requirements
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right functional requirements.
--->
+- **AC-FR-001**: AuditReport gerado como documento único contendo seções separadas para arquitetura, qualidade de código, cobertura de testes, CI, documentação e segurança, cada uma com pelo menos 1 descoberta documentada.
+- **AC-FR-002**: Para uma amostra de 10 findings (ou todas se houver menos de 10), cada finding contém os campos: categoria, severidade, descrição, passos para reproduzir, impacto, recomendação e estimativa de esforço.
+- **AC-FR-003**: Para cada finding marcado Critical/High existem duas entradas: (a) mitigação de curto prazo com passos concretos; (b) proposta de solução completa com sequência de passos e estimativa de esforço.
+- **AC-FR-004**: As top 5 descobertas de maior impacto têm tarefas registradas em sistema de acompanhamento (ou planilha) com título, descrição, critérios de aceite, estimativa de esforço e proprietário indicado.
+- **AC-FR-005**: Roadmap entregue com cada item categorizado como Quick win, Médio prazo ou Longo prazo, e cada item tem impacto estimado e esforço estimado.
+- **AC-FR-006**: Métricas de baseline documentadas em formato tabular com fonte e data (e.g., cobertura por módulo com data, taxa de sucesso do CI nas últimas 30 execuções, contagem de findings por severidade).
+- **AC-FR-007**: Para pelo menos 50% das remediações propostas, existe uma recomendação de verificação automatizada (descrita a nível de teste/check) que pode ser adicionada ao CI.
+- **AC-FR-008**: Dependências e obstáculos documentados com instruções claras sobre como obter acesso ou reproduzir ambientes; itens bloqueadores são marcados separadamente.
 
-### Functional Requirements
-
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
-
-*Example of marking unclear requirements:*
-
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
 ### Key Entities *(include if feature involves data)*
 
@@ -144,14 +141,10 @@ Return: SUCCESS (spec ready for planning)
 
 ## Success Criteria *(mandatory)*
 
-<!--
-  ACTION REQUIRED: Define measurable success criteria.
-  These must be technology-agnostic and measurable.
--->
-
 ### Measurable Outcomes
 
-- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"]
-- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
-- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
-- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-001**: Entrega do relatório inicial de auditoria (AuditReport) dentro de 5 dias úteis a partir do início do trabalho (assumido; ver Assumptions).
+- **SC-002**: 100% das descobertas com severidade Critical ou High incluem pelo menos uma recomendação de mitigação e estimativa de esforço.
+- **SC-003**: Para as 5 descobertas de maior impacto, tarefas são criadas com critérios de aceite e proprietário identificado antes do fechamento da auditoria.
+- **SC-004**: Métricas de baseline (cobertura de testes, taxa de sucesso do CI, contagem de findings) são registradas e anexadas ao relatório, permitindo comparação futura.
+- **SC-005**: Pelo menos 50% das recomendações identificadas como "Quick wins" (estimativa &lt;1 dia) são implementáveis sem bloqueios administrativos.
