@@ -31,7 +31,22 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+The following explicit gates are REQUIRED and must be filled in by the plan author. Each item
+below maps to the project constitution and must include evidence or pointers in the plan.
+
+- Test-First gate: list the tests that will be added for this feature and include at least one
+  failing test example or a description of the acceptance test that will be written.
+- Reproducible Dev gate: declare SDK/tool versions and commands to reproduce local setup
+  (including database migration commands such as `dotnet-ef database update`).
+- CI gate: state which CI checks are required for this feature (build, tests, lint, security scan)
+  and any thresholds for passing (e.g., no failing tests, no high-severity vulnerabilities).
+- Observability gate: enumerate logs/metrics/traces that will be added or modified for
+  critical flows introduced by this feature.
+- Versioning gate: indicate whether the change is breaking and provide a migration or deprecation
+  plan if applicable.
+
+Fill each gate with concrete answers or `N/A` if the gate does not apply. Plans that fail any
+mandatory gate MUST include a justification in the Complexity Tracking section.
 
 ## Project Structure
 

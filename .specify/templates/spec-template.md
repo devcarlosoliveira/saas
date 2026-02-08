@@ -20,6 +20,10 @@
   - Demonstrated to users independently
 -->
 
+Mandatory: each user scenario MUST map to at least one automated acceptance test. The
+acceptance criteria listed below MUST be expressed so they can be implemented as tests
+that initially fail (see constitution: Test-First principle).
+
 ### User Story 1 - [Brief Title] (Priority: P1)
 
 [Describe this user journey in plain language]

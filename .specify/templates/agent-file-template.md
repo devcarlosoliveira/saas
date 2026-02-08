@@ -16,6 +16,12 @@ Auto-generated from all feature plans. Last updated: [DATE]
 
 [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES]
 
+## Constitution
+
+This repository maintains a project constitution at `.specify/memory/constitution.md`.
+Generated agent artifacts and any feature plans MUST pass the Constitution Check defined in
+the plan template and the constitution itself.
+
 ## Code Style
 
 [LANGUAGE-SPECIFIC, ONLY FOR LANGUAGES IN USE]

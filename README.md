@@ -70,6 +70,12 @@ You must have the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.
 -   **`Views/`**: Contains the Razor views (`.cshtml` files) that define the application's UI.
 -   **`wwwroot/`**: The directory for static assets like CSS, JavaScript, and images.
 
+## Project Constitution
+
+This repository maintains a project constitution that defines core engineering principles,
+quality gates, and governance for amendments. See `.specify/memory/constitution.md` for the
+full constitution and guidance that plans and PRs must follow.
+
 ## Authentication
 
 Authentication is managed by **ASP.NET Core Identity**. By default, it is configured with the following features:
